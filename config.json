@@ -1,0 +1,6 @@
+{
+    "block_size":1000,
+    "Data_nodes":[
+        "localhost:18861"
+    ]
+}
