@@ -60,6 +60,7 @@ class NameNodeService(rpyc.Service):
     
     def exposed_get_block_mappings(self, filename):
         file_path = os.path.join(self.ROOT_FOLDER, filename)
+        print(file_path)
 
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File {filename} not found in DFS")
@@ -68,7 +69,7 @@ class NameNodeService(rpyc.Service):
             metadata = json.load(f)
             block_mappings = metadata.get('block_mappings', {})
         
-        return block_mappings
+        return json.dumps(block_mappings)
     
 
 if(__name__=='__main__'):

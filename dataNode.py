@@ -33,7 +33,7 @@ class DataNodeService(rpyc.Service):
         return 1,replicas
 
     def exposed_read_block(self,block_id):
-        with open(f'./DATA/{block_id}','r') as f:
+        with open(f'./DATA/{block_id}.txt','r') as f:
             data = f.read()
         return data
     

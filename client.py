@@ -2,6 +2,7 @@ import rpyc
 import uuid
 import os
 import random
+import json
 
 REPLICATION_FACTOR = 3
 BLOCK_SIZE = 10000
@@ -47,7 +48,7 @@ def upload(filepath,destination):
     con.close()
     print('File successfully added')
 
-import rpyc
+
 
 def download(filename, destination_path):
     try:
@@ -58,7 +59,9 @@ def download(filename, destination_path):
         block_mappings = nameNode_con.root.get_block_mappings(filename)
         nameNode_con.close()
 
-        if not block_mappings:
+        block_mappings = str(block_mappings)
+        block_mappings = json.loads(block_mappings)
+        if len(block_mappings) == 0:
             print(f"File '{filename}' not found in DFS.")
             nameNode_con.close()
             return
@@ -93,8 +96,8 @@ def download(filename, destination_path):
 
 
 if(__name__ == '__main__'):
-   # upload('./test.txt','')
-    download("./test.txt","./download.txt")
+#    upload('./test.txt','')
+     download("test.txt","./download.txt")
 
 
 
