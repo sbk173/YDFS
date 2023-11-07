@@ -28,12 +28,15 @@ def upload(filepath,destination):
     block_mappings = dict()
     with open(filepath) as f:
         for i in range(blocks):
+            nodes = [destination_nodes[i]]
             data = f.read(BLOCK_SIZE)
             block_id = uuid.uuid4()
             block_ids.append(block_id)
             host,port = destination_nodes[i].split(':')
             con = rpyc.connect(host,int(port))
-            status,nodes = con.root.write_block(block_id,data,active_nodes,replicas = [destination_nodes[i]])
+            status,replicas = con.root.write_block(block_id,data,active_nodes)
+            replicas = [i for i in replicas]
+            nodes.extend(replicas)
             con.close()
             if(status == 1):
                 print(f'Block_{i} written successfully')

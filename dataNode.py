@@ -8,29 +8,30 @@ class DataNodeService(rpyc.Service):
     def on_connect(self, conn):
         print("Connection Extablished")
 
-    def replicate(self,block_id,block_data,active_nodes,times,replicas=[]):
-        replicas = [i for i in replicas]
+    def replicate(self,block_id,block_data,active_nodes):
         destination_node = random.sample(active_nodes,1)[0]
         host,port = destination_node.split(':')
         con = rpyc.connect(host,int(port))
-        replicas.append(destination_node)
-        con.root.write_block(block_id,block_data,active_nodes,times-1,replicas)
+        con.root.write_block(block_id,block_data,active_nodes,mode=0)
         con.close()
+        return destination_node
     
     def exposed_alive(self):
         return 1
     
-    def exposed_write_block(self,block_id,block_data,active_nodes,times=REPLICATION_FACTOR,replicas = []):
-        print(times,type(times))
+    def exposed_write_block(self,block_id,block_data,active_nodes,times=REPLICATION_FACTOR,mode=1):
         new_times = int(times)-1
         with open(f'./DATA/{block_id}.txt','w') as f:
             f.write(block_data)
-        new_times = new_times-1
+        # new_times = new_times-1
+        if(mode == 0):
+            return 1
+        replicas = []
+        for i in range(new_times):
+            replicas.append(self.replicate(block_id,block_data,active_nodes))
         
-        if(new_times > 0):
-            self.replicate(block_id,block_data,active_nodes,new_times,replicas)
         return 1,replicas
-    
+
     def exposed_read_block(self,block_id):
         with open(f'./DATA/{block_id}','r') as f:
             data = f.read()

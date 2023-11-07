@@ -55,7 +55,7 @@ class NameNodeService(rpyc.Service):
             print(fullpath)
             with open(fullpath,'w') as f:
                 f.write(json.dumps(metadata))
-
+    
 
 
 if(__name__=='__main__'):
