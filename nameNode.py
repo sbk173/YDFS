@@ -55,8 +55,21 @@ class NameNodeService(rpyc.Service):
             print(fullpath)
             with open(fullpath,'w') as f:
                 f.write(json.dumps(metadata))
-    
 
+    
+    
+    # def exposed_get_block_mappings(self, filename):
+    #     file_path = os.path.join(self.ROOT_FOLDER, filename)
+
+    #     if not os.path.exists(file_path):
+    #         raise FileNotFoundError(f"File {filename} not found in DFS")
+
+    #     with open(file_path, 'r') as f:
+    #         metadata = json.load(f)
+    #         block_mappings = metadata.get('block_mappings', {})
+        
+    #     return block_mappings
+    
 
 if(__name__=='__main__'):
     from rpyc.utils.server import ThreadedServer
