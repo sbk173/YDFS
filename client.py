@@ -49,54 +49,52 @@ def upload(filepath,destination):
 
 import rpyc
 
-# def download(filename, destination_path):
-#     try:
-#         nameNode_con = rpyc.connect('localhost', 18862)
-#         active_nodes,no = nameNode_con.root.active_nodes()
-#         active_nodes = [i for i in active_nodes]
+def download(filename, destination_path):
+    try:
+        nameNode_con = rpyc.connect('localhost', 18862)
+        active_nodes,no = nameNode_con.root.active_nodes() # i havent used this 
+        active_nodes = [i for i in active_nodes]
 
-#         block_mappings = nameNode_con.root.get_block_mappings(filename)
-#         nameNode_con.close()
+        block_mappings = nameNode_con.root.get_block_mappings(filename)
+        nameNode_con.close()
 
-#         if not block_mappings:
-#             print(f"File '{filename}' not found in DFS.")
-#             nameNode_con.close()
-#             return
+        if not block_mappings:
+            print(f"File '{filename}' not found in DFS.")
+            nameNode_con.close()
+            return
        
-#         with open(destination_path, 'a') as f:
-#             for block_id, data_nodes in block_mappings.items():
-#                 success = False
-#                 for data_node in active_nodes:
-#                     host, port = data_node.split(':')
+        with open(destination_path, 'a') as f:
+            for block_id, data_nodes in block_mappings.items():
+                success = False
+                for data_node in data_nodes:
+                    host, port = data_node.split(':')
 
-#                     try:
-#                         dataNode_con = rpyc.connect(host, int(port))
-#                         block_data = dataNode_con.root.read_block(block_id)
-#                         dataNode_con.close()
+                    try:
+                        dataNode_con = rpyc.connect(host, int(port))
+                        block_data = dataNode_con.root.read_block(block_id)
+                        dataNode_con.close()
 
-#                         if block_data:
-#                             f.write(block_data)
-#                             success = True
-#                             break  
+                        if block_data:
+                            f.write(block_data)
+                            success = True
+                            break  
 
-#                     except Exception as e:
-#                         print(f"Error accessing DataNode {data_node}: {str(e)}")
-#                         continue 
+                    except Exception as e:
+                        print(f"Error accessing DataNode {data_node}: {str(e)}")
+                        continue 
 
-#                 if not success:
-#                     print(f"Failed to retrieve block {block_id} from all DataNodes.")
+                if not success:
+                    print(f"Failed to retrieve block {block_id} from all DataNodes.")
 
-#         print(f"File '{filename}' downloaded to '{destination_path}' successfully.")
+        print(f"File '{filename}' downloaded to '{destination_path}' successfully.")
 
-       
-
-#     except Exception as e:
-#         print(f"Error during download: {str(e)}")
+    except Exception as e:
+        print(f"Error during download: {str(e)}")
 
 
 if(__name__ == '__main__'):
-    upload('./test.txt','')
-    #download("./test.txt","./download.txt")
+   # upload('./test.txt','')
+    download("./test.txt","./download.txt")
 
 
 
