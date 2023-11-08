@@ -34,6 +34,9 @@ class NameNodeService(rpyc.Service):
                 self.ActiveNodes.append(i)
                 con.close()
 
+    def absolute_path(self,path):
+        path = path.lstrip('./')
+        return os.path.join(self.ROOT_FOLDER,path)
 
     def exposed_active_nodes(self):
         return self.ActiveNodes,len(self.ActiveNodes)
@@ -73,6 +76,60 @@ class NameNodeService(rpyc.Service):
             block_mappings = metadata.get('block_mappings', {})
         
         return json.dumps(block_mappings)
+    
+    def exposed_mkdir(self,dir_path):
+        dir_path = self.absolute_path(dir_path)
+        if(os.path.exists(dir_path) == True):
+            raise Exception(f"Directory Already exists")
+        else:
+            os.mkdir(dir_path)
+
+    # def exposed_traversal(self,path):
+    #     dest_path = self.absolute_path(path)
+    #     if(os.path.exists(dest_path)==True and os.path.isdir(dest_path)==True):
+    #         return 1
+    #     else:
+    #         raise Exception(f'No such directory {path}')
+    
+    def exposed_copy(self,source,destination):
+        source = self.absolute_path(source)
+        destination = self.absolute_path(destination)
+
+        file_name = source.split('/')[-1]
+        if(os.path.exists(source)== True and os.path.exists(destination)==True):
+            with open(source,'r') as f:
+                with open(os.path.join(destination,file_name),'w') as f2:
+                    data = f.read()
+                    f2.write(data)
+            
+        else:
+            raise Exception("Either source or destination path doesn't exist")
+    
+    def exposed_move(self,source,destination):
+        source = self.absolute_path(source)
+        destination = self.absolute_path(destination)
+        if(source == destination):
+            raise Exception("Source cannot be the same as destination")
+        dest_dir = "/".join(destination.split('/')[:-1])
+        if(os.path.exists(source) == True and os.path.exists(dest_dir) == True):
+            with open(source,'r') as f:
+                with open(destination,'w') as f2:
+                    data = f.read()
+                    f2.write(data)
+            
+            os.remove(source)
+        else:
+            raise Exception("Either source or destination path doesn't exist")
+        
+    def exposed_list_contents(self,path):
+        path = self.absolute_path(path)
+        if(os.path.exists(path) == False):
+            raise Exception('No such directory')
+        
+        else:
+            return os.listdir(path)
+
+
     
 
 if(__name__=='__main__'):
