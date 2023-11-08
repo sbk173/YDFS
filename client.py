@@ -63,9 +63,6 @@ def download(filename, destination_path):
     try:
         #Get metadata of the file
         nameNode_con = rpyc.connect('localhost', 18862)
-        active_nodes,no = nameNode_con.root.active_nodes() # i havent used this 
-        active_nodes = [i for i in active_nodes]
-
         block_mappings = nameNode_con.root.get_block_mappings(filename)
         nameNode_con.close()
 
@@ -77,7 +74,7 @@ def download(filename, destination_path):
             return
         
         #Write Data to output file
-        with open(destination_path, 'a') as f:
+        with open(destination_path, 'w') as f:
             for block_id, data_nodes in block_mappings.items():
                 success = False
                 for data_node in data_nodes:
@@ -107,8 +104,8 @@ def download(filename, destination_path):
 
 
 if(__name__ == '__main__'):
-    upload('./test.txt','')
-    # download("test.txt","./download.txt")
+    #upload('53.electricity.csv','')
+    download("53.electricity.csv","./download.csv")
 
 
 
