@@ -6,7 +6,7 @@ REPLICATION_FACTOR = 3
 
 class DataNodeService(rpyc.Service):
     def on_connect(self, conn):
-        print("Connection Extablished")
+        print("Connection Established")
 
     def replicate(self,block_id,block_data,active_nodes):
         destination_node = random.sample(active_nodes,1)[0]

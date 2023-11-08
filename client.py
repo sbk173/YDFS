@@ -4,27 +4,35 @@ import os
 import random
 import json
 
-REPLICATION_FACTOR = 3
-BLOCK_SIZE = 10000
+# REPLICATION_FACTOR = 3
+# BLOCK_SIZE = 10000
 # con = rpyc.connect('localhost',18862)
-
 # print(con.root.f())
-
 # con.close()
+
 
 def upload(filepath,destination):
     filename = filepath.split('/')[-1]
+    #Get active DataNode List
     con = rpyc.connect('localhost',18862)
     active_nodes,no = con.root.active_nodes()
     active_nodes = [i for i in active_nodes]
-    print(active_nodes)
-    con.close()
+    # print(active_nodes)
+
+    #Calculate Number of Blocks Required
     size = os.path.getsize(filepath)
-    blocks = size//BLOCK_SIZE + 1 if(size%BLOCK_SIZE!=0) else 0
+    blocks,BLOCK_SIZE = con.root.calculate_no_blocks(size)
+    blocks = int(blocks)
+    BLOCK_SIZE = int(BLOCK_SIZE)
+    con.close()
+
+    #Decide on which DataNodes to use
     if(blocks < no):
         destination_nodes = random.sample(active_nodes,blocks)
     else:
         destination_nodes = random.choices(active_nodes,k = blocks)
+
+    #Writing Blocks to DataNode
     block_ids = []
     block_mappings = dict()
     with open(filepath) as f:
@@ -43,8 +51,9 @@ def upload(filepath,destination):
                 print(f'Block_{i} written successfully')
                 block_mappings[str(block_id)] = nodes
 
+    #Update Metadata
     con = rpyc.connect('localhost',18862)
-    con.root.add_file(filename,destination,block_mappings)
+    con.root.add_file(filename,destination,json.dumps(block_mappings))
     con.close()
     print('File successfully added')
 
@@ -52,6 +61,7 @@ def upload(filepath,destination):
 
 def download(filename, destination_path):
     try:
+        #Get metadata of the file
         nameNode_con = rpyc.connect('localhost', 18862)
         active_nodes,no = nameNode_con.root.active_nodes() # i havent used this 
         active_nodes = [i for i in active_nodes]
@@ -65,7 +75,8 @@ def download(filename, destination_path):
             print(f"File '{filename}' not found in DFS.")
             nameNode_con.close()
             return
-       
+        
+        #Write Data to output file
         with open(destination_path, 'a') as f:
             for block_id, data_nodes in block_mappings.items():
                 success = False
@@ -96,8 +107,8 @@ def download(filename, destination_path):
 
 
 if(__name__ == '__main__'):
-#    upload('./test.txt','')
-     download("test.txt","./download.txt")
+    upload('./test.txt','')
+    # download("test.txt","./download.txt")
 
 
 

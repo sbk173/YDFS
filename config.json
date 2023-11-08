@@ -1,5 +1,5 @@
 {
-    "block_size":1000,
+    "block_size":10000,
     "Data_nodes":[
         "localhost:18861",
         "localhost:18867"
