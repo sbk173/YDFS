@@ -120,5 +120,9 @@ if __name__ == '__main__':
         inp = input().strip().split()
         if inp[0] == 'exit':
             x = False
-        if inp[0] == 'ls':
+        elif inp[0] == 'ls':
             ls(inp[1])
+        elif inp[0] == 'put':
+            upload(inp[2], inp[1])
+        elif inp[0] == 'get':
+            download(inp[1], inp[2])
