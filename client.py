@@ -102,10 +102,23 @@ def download(filename, destination_path):
     except Exception as e:
         print(f"Error during download: {str(e)}")
 
+def ls(file_path):
+    if os.path.exists(file_path):
+        files = [f for f in os.listdir(file_path)]
+        for i, file in enumerate(files):
+            print(f"{i+1}. {file}")
+    else:
+        print("Directory does not exist.")
 
-if(__name__ == '__main__'):
+if __name__ == '__main__':
     #upload('53.electricity.csv','')
-    download("53.electricity.csv","./download.csv")
+    #download("53.electricity.csv","./download.csv")
 
-
-
+    # print("In client")
+    x = True
+    while x:
+        inp = input().strip().split()
+        if inp[0] == 'exit':
+            x = False
+        if inp[0] == 'ls':
+            ls(inp[1])
