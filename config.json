@@ -1,7 +1,11 @@
 {
     "block_size":10000,
+    "replication_factor":3,
     "Data_nodes":[
+        "192.168.0.155:18861",
         "localhost:18861",
-        "localhost:18867"
+        "localhost:18867",
+        "192.168.0.184:18861",
+        "192.168.0.184:18867"
     ]
 }
