@@ -21,7 +21,7 @@ class DataNodeService(rpyc.Service):
     
     def exposed_write_block(self,block_id,block_data,active_nodes,times=REPLICATION_FACTOR,mode=1):
         new_times = int(times)-1
-        with open(f'./DATA/{block_id}.txt','w') as f:
+        with open(f'./DATA/{block_id}','w') as f:
             f.write(block_data)
         # new_times = new_times-1
         if(mode == 0):
@@ -33,7 +33,7 @@ class DataNodeService(rpyc.Service):
         return 1,replicas
 
     def exposed_read_block(self,block_id):
-        with open(f'./DATA/{block_id}.txt','r') as f:
+        with open(f'./DATA/{block_id}','r') as f:
             data = f.read()
         return data
     

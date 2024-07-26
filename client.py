@@ -104,8 +104,8 @@ def download(filename, destination_path):
 
 
 if(__name__ == '__main__'):
-    #upload('53.electricity.csv','')
-    download("53.electricity.csv","./download.csv")
+    upload('test.txt','')
+    # download("53.electricity.csv","./download.csv")
 
 
 
