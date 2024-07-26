@@ -1,7 +1,7 @@
 import rpyc
 
-con = rpyc.connect('localhost',18862)
+con = rpyc.connect('192.168.0.155',18861)
 
-print(con.root.move('./test.txt','./x.txt'))
+print(con.root.alive())
 
 con.close()
